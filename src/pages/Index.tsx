@@ -1,12 +1,49 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
 
+type Bullet = { icon: string; text: string };
+
+type Slide = {
+  id: number;
+  label: string;
+  tag: string;
+  title: string;
+  subtitle: string;
+  body: string | null;
+  accent: string | null;
+  image: string;
+  imageAlt: string;
+  bg: string;
+  accentColor: string;
+  bullets: Bullet[] | null;
+  isCover?: boolean;
+  author?: string;
+  grade?: string;
+};
+
 const KIDNEY_IMG = "https://cdn.poehali.dev/projects/9a217bb2-b82f-43d5-8006-c52255230c12/files/0dfa21b0-0af9-4f42-b342-799bedad4cb9.jpg";
 
 const slides = [
   {
+    id: 0,
+    label: "Слайд 1 из 5",
+    tag: "ПРЕЗЕНТАЦИЯ",
+    title: "Почечная недостаточность",
+    subtitle: "Тема доклада",
+    body: null,
+    accent: null,
+    image: KIDNEY_IMG,
+    imageAlt: "Почки человека",
+    bg: "#0f172a",
+    accentColor: "#60a5fa",
+    isCover: true,
+    author: "Санжиева Виолетта",
+    grade: "9Ж класс",
+    bullets: null,
+  },
+  {
     id: 1,
-    label: "Слайд 1 из 4",
+    label: "Слайд 2 из 5",
     tag: "ОПРЕДЕЛЕНИЕ",
     title: "Почечная недостаточность",
     subtitle: "Что это такое?",
@@ -20,7 +57,7 @@ const slides = [
   },
   {
     id: 2,
-    label: "Слайд 2 из 4",
+    label: "Слайд 3 из 5",
     tag: "ПРИЧИНЫ",
     title: "Почему развивается болезнь?",
     subtitle: "Основные факторы риска",
@@ -40,7 +77,7 @@ const slides = [
   },
   {
     id: 3,
-    label: "Слайд 3 из 4",
+    label: "Слайд 4 из 5",
     tag: "СИМПТОМЫ",
     title: "Как распознать болезнь?",
     subtitle: "Тревожные признаки",
@@ -59,7 +96,7 @@ const slides = [
   },
   {
     id: 4,
-    label: "Слайд 4 из 4",
+    label: "Слайд 5 из 5",
     tag: "ПРОФИЛАКТИКА",
     title: "Как избежать болезни?",
     subtitle: "Простые правила защиты почек",
@@ -81,7 +118,7 @@ const slides = [
 
 const Index = () => {
   const [current, setCurrent] = useState(0);
-  const slide = slides[current];
+  const slide = slides[current] as Slide;
 
   const prev = () => setCurrent((c) => Math.max(0, c - 1));
   const next = () => setCurrent((c) => Math.min(slides.length - 1, c + 1));
@@ -104,7 +141,7 @@ const Index = () => {
           alignItems: "center",
           justifyContent: "space-between",
           padding: "20px 40px",
-          borderBottom: "1px solid rgba(0,0,0,0.07)",
+          borderBottom: slide.isCover ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.07)",
         }}
       >
         <span
@@ -128,7 +165,7 @@ const Index = () => {
         style={{
           flex: 1,
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: slide.isCover ? "1fr" : "1fr 1fr",
           gap: 0,
           maxWidth: 1200,
           width: "100%",
@@ -137,8 +174,30 @@ const Index = () => {
           alignItems: "center",
         }}
       >
+        {slide.isCover && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", gap: 32 }}>
+            <div style={{ position: "relative", width: 220, height: 220, borderRadius: "50%", overflow: "hidden", boxShadow: "0 0 0 6px #60a5fa30, 0 20px 60px rgba(0,0,0,0.5)" }}>
+              <img src={KIDNEY_IMG} alt="Почки" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            </div>
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: 4, color: "#60a5fa", textTransform: "uppercase" as const, marginBottom: 16, fontFamily: "'IBM Plex Sans', sans-serif" }}>
+                Медицина · Биология
+              </div>
+              <h1 style={{ fontSize: "clamp(36px, 5vw, 72px)", fontWeight: 900, color: "#fff", lineHeight: 1.05, letterSpacing: -2, marginBottom: 20 }}>
+                Почечная<br />недостаточность
+              </h1>
+              <p style={{ fontSize: "clamp(14px, 1.8vw, 20px)", color: "#94a3b8", fontFamily: "'IBM Plex Sans', sans-serif", marginBottom: 32, lineHeight: 1.5 }}>
+                Определение · Причины · Профилактика
+              </p>
+              <div style={{ display: "inline-flex", flexDirection: "column", gap: 4, background: "#ffffff10", border: "1px solid #ffffff20", borderRadius: 16, padding: "16px 32px" }}>
+                <span style={{ fontSize: 20, fontWeight: 700, color: "#fff" }}>{slide.author}</span>
+                <span style={{ fontSize: 14, color: "#60a5fa", fontFamily: "'IBM Plex Sans', sans-serif" }}>{slide.grade}</span>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Левая часть — текст */}
-        <div style={{ paddingRight: 48 }}>
+        {!slide.isCover && <div style={{ paddingRight: 48 }}>
           <div
             style={{
               fontSize: 13,
@@ -231,9 +290,10 @@ const Index = () => {
               {slide.accent}
             </div>
           )}
-        </div>
+        </div>}
 
         {/* Правая часть — изображение */}
+        {!slide.isCover && (
         <div
           style={{
             position: "relative",
@@ -260,6 +320,7 @@ const Index = () => {
             }}
           />
         </div>
+        )}
       </div>
 
       {/* Нижняя навигация */}
