@@ -17,11 +17,16 @@ type Slide = {
   accentColor: string;
   bullets: Bullet[] | null;
   isCover?: boolean;
+  imageRight?: boolean;
   author?: string;
   grade?: string;
 };
 
-const KIDNEY_IMG = "https://cdn.poehali.dev/projects/9a217bb2-b82f-43d5-8006-c52255230c12/files/0dfa21b0-0af9-4f42-b342-799bedad4cb9.jpg";
+const IMG_COVER   = "https://cdn.poehali.dev/projects/9a217bb2-b82f-43d5-8006-c52255230c12/files/0dfa21b0-0af9-4f42-b342-799bedad4cb9.jpg";
+const IMG_DEFINE  = "https://cdn.poehali.dev/projects/9a217bb2-b82f-43d5-8006-c52255230c12/files/74640b8c-33c6-4bf2-b07b-60dcbf32323a.jpg";
+const IMG_CAUSES  = "https://cdn.poehali.dev/projects/9a217bb2-b82f-43d5-8006-c52255230c12/files/b9c99c7e-5f16-4c60-925e-a3336f2f239f.jpg";
+const IMG_SYMPTOM = "https://cdn.poehali.dev/projects/9a217bb2-b82f-43d5-8006-c52255230c12/files/18b29c09-ece6-4894-986c-369f6d0907e4.jpg";
+const IMG_PREVENT = "https://cdn.poehali.dev/projects/9a217bb2-b82f-43d5-8006-c52255230c12/files/17f374b1-3c8e-4507-bd5d-763a16e7ee97.jpg";
 
 const slides = [
   {
@@ -32,11 +37,12 @@ const slides = [
     subtitle: "Тема доклада",
     body: null,
     accent: null,
-    image: KIDNEY_IMG,
+    image: IMG_COVER,
     imageAlt: "Почки человека",
     bg: "#0f172a",
     accentColor: "#60a5fa",
     isCover: true,
+    imageRight: false,
     author: "Санжиева Виолетта",
     grade: "9Ж класс",
     bullets: null,
@@ -49,10 +55,11 @@ const slides = [
     subtitle: "Что это такое?",
     body: "Синдром, при котором почки утрачивают способность очищать кровь, выводить токсины и поддерживать баланс жидкости в организме.",
     accent: "Острая или хроническая форма — оба состояния опасны для жизни.",
-    image: KIDNEY_IMG,
-    imageAlt: "Почки человека, анатомия",
+    image: IMG_DEFINE,
+    imageAlt: "Анатомия почки, срез",
     bg: "#f8f9fb",
     accentColor: "#2563eb",
+    imageRight: true,
     bullets: null,
   },
   {
@@ -63,10 +70,11 @@ const slides = [
     subtitle: "Основные факторы риска",
     body: null,
     accent: null,
-    image: KIDNEY_IMG,
+    image: IMG_CAUSES,
     imageAlt: "Факторы риска почечной недостаточности",
     bg: "#f0f4ff",
     accentColor: "#1d4ed8",
+    imageRight: false,
     bullets: [
       { icon: "Droplets", text: "Сахарный диабет — №1 причина в мире" },
       { icon: "Heart", text: "Артериальная гипертония (высокое давление)" },
@@ -83,10 +91,11 @@ const slides = [
     subtitle: "Тревожные признаки",
     body: null,
     accent: "При появлении этих симптомов — немедленно обратитесь к врачу!",
-    image: KIDNEY_IMG,
+    image: IMG_SYMPTOM,
     imageAlt: "Симптомы почечной недостаточности",
     bg: "#fff8f0",
     accentColor: "#d97706",
+    imageRight: true,
     bullets: [
       { icon: "Moon", text: "Отёки лица, ног и рук по утрам" },
       { icon: "Wind", text: "Постоянная усталость и одышка" },
@@ -102,10 +111,11 @@ const slides = [
     subtitle: "Простые правила защиты почек",
     body: null,
     accent: "Профилактика в 10 раз дешевле лечения.",
-    image: KIDNEY_IMG,
+    image: IMG_PREVENT,
     imageAlt: "Здоровый образ жизни и почки",
     bg: "#f0fff4",
     accentColor: "#16a34a",
+    imageRight: false,
     bullets: [
       { icon: "Droplet", text: "Пить 1.5–2 литра чистой воды в день" },
       { icon: "Apple", text: "Ограничить соль, сахар и жирную пищу" },
@@ -196,8 +206,16 @@ const Index = () => {
             </div>
           </div>
         )}
-        {/* Левая часть — текст */}
-        {!slide.isCover && <div style={{ paddingRight: 48 }}>
+        {/* Картинка слева (если imageRight = false) */}
+        {!slide.isCover && !slide.imageRight && (
+          <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", aspectRatio: "4/3", boxShadow: "0 20px 60px rgba(0,0,0,0.12)" }}>
+            <img src={slide.image} alt={slide.imageAlt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(135deg, ${slide.accentColor}20 0%, transparent 60%)` }} />
+          </div>
+        )}
+
+        {/* Текст */}
+        {!slide.isCover && <div style={{ paddingLeft: slide.imageRight ? 0 : 48, paddingRight: slide.imageRight ? 48 : 0 }}>
           <div
             style={{
               fontSize: 13,
@@ -292,34 +310,12 @@ const Index = () => {
           )}
         </div>}
 
-        {/* Правая часть — изображение */}
-        {!slide.isCover && (
-        <div
-          style={{
-            position: "relative",
-            borderRadius: 24,
-            overflow: "hidden",
-            aspectRatio: "4/3",
-            boxShadow: "0 20px 60px rgba(0,0,0,0.12)",
-          }}
-        >
-          <img
-            src={slide.image}
-            alt={slide.imageAlt}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
-          />
-          <div
-            style={{
-              position: "absolute",
-              inset: 0,
-              background: `linear-gradient(135deg, ${slide.accentColor}20 0%, transparent 60%)`,
-            }}
-          />
-        </div>
+        {/* Картинка справа (если imageRight = true) */}
+        {!slide.isCover && slide.imageRight && (
+          <div style={{ position: "relative", borderRadius: 24, overflow: "hidden", aspectRatio: "4/3", boxShadow: "0 20px 60px rgba(0,0,0,0.12)" }}>
+            <img src={slide.image} alt={slide.imageAlt} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ position: "absolute", inset: 0, background: `linear-gradient(225deg, ${slide.accentColor}20 0%, transparent 60%)` }} />
+          </div>
         )}
       </div>
 
